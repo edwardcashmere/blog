@@ -1,0 +1,20 @@
+---
+
+- hosts: all
+  become: true
+  remote_user: root
+  tasks:
+
+  - name: update repository index
+    apt: 
+      update_cache: yes
+  - name: install nginx
+    apt:
+      name: nginx
+      state: latest
+  - name: start nginx
+    service:
+      name: nginx
+      state: started
+
+    

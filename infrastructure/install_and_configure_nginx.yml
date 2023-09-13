@@ -1,0 +1,21 @@
+---
+
+hosts: all
+become: true
+remote_user: root
+tasks:
+
+  - name: Install nginx
+    apt:
+      update_cache: yes
+      name: nginx
+      state: latest
+
+  - name: Start ngnix 
+    service:
+      name: nginx
+      state: started
+      enabled: true
+
+  
+

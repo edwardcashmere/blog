@@ -1,0 +1,6 @@
+<section >
+  <div :for={post <- @posts}>
+    <h1><%= post.title %></h1>
+      <%= raw post.body %>
+  </div>
+</section>
