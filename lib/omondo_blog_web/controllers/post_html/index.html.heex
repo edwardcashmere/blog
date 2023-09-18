@@ -1,6 +1,20 @@
-<section >
-  <div :for={post <- @posts}>
-    <h1><%= post.title %></h1>
-      <%= raw post.body %>
+<section class="w-full">
+  <div class="w-full flex mb-5">
+    <button class="text-3xl mr-2">Top Tags:</button>
+    <div class="flex justify-center items-center space-x-3 text-lg">
+      <.tag tag="Elixir" />
+      <.tag tag="LiveView" />
+      <.tag tag="Linux" />
+      <.tag tag="Ansible" />
+      <.tag tag="Golang" />
+    </div>
+  </div>
+  <div class="grid grid-cols-2 gap-4">
+    <.card
+      :for={post <- @posts}
+      title={post.title}
+      date="Sunday, September 11th, 2021 ~"
+      body={post.body}
+    />
   </div>
 </section>

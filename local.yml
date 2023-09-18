@@ -1,0 +1,15 @@
+---
+- hosts: web
+  become: true
+  remote_user: root
+
+  pre_tasks: 
+    - name: update repositories
+      apt:
+        update_cache: yes
+      changed_when: False
+
+  tasks:
+    - include: infrastructure/add_user_to_server.yml
+    # - include: infrastructure/install_cron_job.yml
+    # - include: infrastructure/packages.yml

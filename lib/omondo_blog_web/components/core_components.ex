@@ -418,6 +418,51 @@ defmodule OmondoBlogWeb.CoreComponents do
     """
   end
 
+  @doc """
+   Renders customer tags buttons for the blog
+  """
+  attr :tag, :string, required: true
+
+  def tag(assigns) do
+    ~H"""
+    <button class="text-green-300 px-2 border border-green-300 rounded-md hover:border-slate-500">
+      <%= @tag %>
+    </button>
+    """
+  end
+
+  @doc """
+  Renders a card for post
+  """
+  attr :title, :string, required: true
+  attr :date, :string, required: true
+  attr :body, :string, required: true
+  attr :tags, :list, default: []
+
+  def card(assigns) do
+    ~H"""
+    <article class="max-w-sm w-full lg:max-w-full lg:w-96 h-80 shadow-lg shadow-gray-300 py-6 px-2 overflow-hidden rounded-md">
+      <.header>
+        <p class="text-2xl text-green-400 font-semibold"><%= @title %></p>
+      </.header>
+      <hr />
+      <p class="text-sm"><%= @date %></p>
+      <p class="truncate mt-2 "><%= Phoenix.HTML.raw(String.slice(@body, 0..200)) %>...</p>
+      <div class="px-6 pt-4 pb-2">
+        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+          #photography
+        </span>
+        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+          #travel
+        </span>
+        <span class="inline-block bg-gray-200 rounded-full px-3 py-1 text-sm font-semibold text-gray-700 mr-2 mb-2">
+          #winter
+        </span>
+      </div>
+    </article>
+    """
+  end
+
   @doc ~S"""
   Renders a table with generic styling.
 

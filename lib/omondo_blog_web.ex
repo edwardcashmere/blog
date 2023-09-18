@@ -45,6 +45,7 @@ defmodule OmondoBlogWeb do
 
       import Plug.Conn
       import OmondoBlogWeb.Gettext
+      import OmondoBlogWeb.CoreComponents
 
       unquote(verified_routes())
     end
