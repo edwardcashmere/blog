@@ -10,5 +10,9 @@
       changed_when: False
 
   tasks:
-    - include: infrastructure/install_cron_job.yml
-    - include: infrastructure/packages.yml
+    - name: create project directory
+      command: 
+        cmd: mkdir -p /var/www/blog
+
+
+    

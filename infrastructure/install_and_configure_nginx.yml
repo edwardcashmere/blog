@@ -1,21 +1,13 @@
----
+- name: Copy Project directory
+  copy:
+    src: ../**
+    dest: /var/www/
 
-hosts: all
-become: true
-remote_user: root
-tasks:
+# - name: Add Erlang Version From Tool Version
+#   command: 
+#     cmd: echo 
 
-  - name: Install nginx
-    apt:
-      update_cache: yes
-      name: nginx
-      state: latest
 
-  - name: Start ngnix 
-    service:
-      name: nginx
-      state: started
-      enabled: true
 
   
 
