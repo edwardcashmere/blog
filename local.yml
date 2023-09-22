@@ -10,14 +10,11 @@
       changed_when: False
 
   tasks:
-    - name: create project directory
-      command: 
-        cmd: mkdir -p /var/www/blog
-
-    # - name: copy project files
-    #   copy:
-    #     src: ./**
-    #     dest: /var/www/blog
+    - include: infrastructure/packages.yml
+    - name: copy project files
+      copy:
+        src: ./**
+        dest: /var/www/blog
 
     # - name: install asdf
 
