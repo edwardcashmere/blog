@@ -14,5 +14,21 @@
       command: 
         cmd: mkdir -p /var/www/blog
 
+    # - name: copy project files
+    #   copy:
+    #     src: ./**
+    #     dest: /var/www/blog
+
+    # - name: install asdf
+
+    # - name: install erlang elixir nodjs
+    #   command: 
+    #     cmd: asdf install
+
+
+
+
+
+
 
     
