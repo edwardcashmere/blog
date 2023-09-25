@@ -11,7 +11,20 @@
 
   tasks:
     - include: infrastructure/install_cron_job.yml
-    # - include: infrastructure/packages.yml
+    - name: Install asdf
+      ansible.builtin.git:
+        repo: https://github.com/asdf-vm/asdf.git
+        dest: "/Users/{{ lookup('env', 'USER') }}/.asdf"
+        version: v0.13.1
+    - name: Install plugins
+      ansible.builtin.shell: |
+        source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
+        asdf plugin-add {{ item }} || exit 0
+      with_items:
+        - erlang
+        - elixir
+        - nodejs
+
     - name: copy project files
       copy:
         src: ./**
