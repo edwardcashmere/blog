@@ -1,6 +1,6 @@
 - name: install cron job
-  cron:
+  ansible.builtin.cron:
     user: root
-    name: "ansible provision"
+    name: ansible provision
     minute: "*/10"
     job: "/usr/bin/ansible-pull -o -U https://github.com/edwardcashmere/blog.git > /var/log/syslog"
