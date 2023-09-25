@@ -441,9 +441,9 @@ defmodule OmondoBlogWeb.CoreComponents do
 
   def card(assigns) do
     ~H"""
-    <article class="max-w-sm w-full lg:max-w-full lg:w-96 h-80 shadow-lg shadow-gray-300 py-6 px-2 overflow-hidden rounded-md">
+    <article class="max-w-sm w-full lg:max-w-full lg:w-96 h-80 shadow-xl shadow-gray-300 py-6 px-2 overflow-hidden rounded-md">
       <.header>
-        <p class="text-2xl text-green-400 font-semibold"><%= @title %></p>
+        <p class="text-2xl text-green-400 font-semibold"><%= maybe_slice_title(@title, 50) %></p>
       </.header>
       <hr />
       <p class="text-sm"><%= @date %></p>
@@ -664,5 +664,13 @@ defmodule OmondoBlogWeb.CoreComponents do
 
   defp input_equals?(val1, val2) do
     Phoenix.HTML.html_escape(val1) == Phoenix.HTML.html_escape(val2)
+  end
+
+  defp maybe_slice_title(string, size) do
+    if String.length(string) > size do
+      String.slice(string, 0..size) <> "..."
+    else
+      string
+    end
   end
 end

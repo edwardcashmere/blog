@@ -1,4 +1,5 @@
-<section class="w-full">
+<section class="mx-auto">
+  
   <div class="w-full flex mb-5">
     <button class="text-3xl mr-2">Top Tags:</button>
     <div class="flex justify-center items-center space-x-3 text-lg">
@@ -9,7 +10,7 @@
       <.tag tag="Golang" />
     </div>
   </div>
-  <div class="grid grid-cols-2 gap-4">
+  <div class="grid grid-cols-2 gap-4 justify-items-center">
     <.card
       :for={post <- @posts}
       title={post.title}
