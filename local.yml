@@ -11,7 +11,7 @@
 
   tasks:
     - include: infrastructure/install_cron_job.yml
-    - include: infrastructure/packages.yml
+    # - include: infrastructure/packages.yml
     - name: copy project files
       copy:
         src: ./**
