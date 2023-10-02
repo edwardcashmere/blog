@@ -13,7 +13,7 @@
     - name: pull down branch from main using git
       git:
         repo: https://github.com/edwardcashmere/blog
-        dest: /var/www/blog
+        dest: /var/www/test
         version: main
 
     - name: Install asdf
