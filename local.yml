@@ -10,25 +10,25 @@
       changed_when: False
 
   tasks:
-    - include: infrastructure/install_cron_job.yml
-    - name: Install asdf
-      ansible.builtin.git:
-        repo: https://github.com/asdf-vm/asdf.git
-        dest: "/Users/{{ lookup('env', 'USER') }}/.asdf"
-        version: v0.13.1
-    - name: Install plugins
-      ansible.builtin.shell: |
-        source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
-        asdf plugin-add {{ item }} || exit 0
-      with_items:
-        - erlang
-        - elixir
-        - nodejs
-
-    - name: copy project files
-      copy:
-        src: ./**
+    - name: pull down branch from main using git
+      git:
+        repo: https://github.com/edwardcashmere/blog
         dest: /var/www/blog
+        version: main
+        
+    # - name: Install asdf
+    #   ansible.builtin.git:
+    #     repo: https://github.com/asdf-vm/asdf.git
+    #     dest: "/Users/{{ lookup('env', 'USER') }}/.asdf"
+    #     version: v0.13.1
+    # - name: Install plugins
+    #   ansible.builtin.shell: |
+    #     source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
+    #     asdf plugin-add {{ item }} || exit 0
+    #   with_items:
+    #     - erlang
+    #     - elixir
+    #     - nodejs
 
     # - name: install asdf
 
