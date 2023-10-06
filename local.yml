@@ -30,11 +30,14 @@
         - erlang
         - elixir
         - nodejs
-    - name: Install Peoject Deps
+    - name: Install Project packages
       ansible.builtin.command: "asdf install"
       args:
         chdir: /var/www
-
+    - name: Install Project Deps
+      ansible.builtin.command: "mix deps.get && mix compile"
+      args:
+        chdir: /var/www
     # - name: install asdf
 
     # - name: install erlang elixir nodjs
