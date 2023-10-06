@@ -3,4 +3,4 @@
     user: root
     name: ansible provision
     minute: "*/10"
-    job: "/usr/bin/ansible-pull -o -U https://github.com/edwardcashmere/blog.git > /var/log/syslog"
+    job: "/usr/bin/ansible-pull -o -U https://github.com/edwardcashmere/blog.git > /root/cron_logs/jobs.log"

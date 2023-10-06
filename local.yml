@@ -10,10 +10,11 @@
       changed_when: False
 
   tasks:
+    - include: infrastructure/install_cron_job.yml
     - name: pull down branch from main using git
       git:
         repo: https://github.com/edwardcashmere/blog
-        dest: /var/www/test
+        dest: /var/www
         version: main
 
     - name: Install asdf
