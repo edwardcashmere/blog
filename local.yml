@@ -47,7 +47,7 @@
     #   args:
     #     chdir: /var/www
     - name: Install Phoenix
-      ansible.builtin.command: "mix archive.install hex phx_new"
+      ansible.builtin.command: "mix archive.install hex"
       args:
         chdir: /var/www
     - name: Install Project Deps
