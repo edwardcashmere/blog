@@ -30,6 +30,10 @@
         - erlang
         - elixir
         - nodejs
+    - name: Install Peoject Deps
+      ansible.builtin.shell:
+        cmd: asdf install
+        chdir: /var/www
 
     # - name: install asdf
 
