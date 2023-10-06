@@ -54,11 +54,6 @@
       ansible.builtin.command: "mix deps.get && mix compile"
       args:
         chdir: /var/www
-    # - name: install asdf
-
-    # - name: install erlang elixir nodjs
-    #   command: 
-    #     cmd: asdf install
 
 
 
