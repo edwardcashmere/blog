@@ -31,8 +31,8 @@
         - elixir
         - nodejs
     - name: Install Peoject Deps
-      ansible.builtin.shell:
-        cmd: asdf install
+      ansible.builtin.command: "asdf insall"
+      args:
         chdir: /var/www
 
     # - name: install asdf
