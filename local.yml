@@ -30,22 +30,22 @@
         - erlang
         - elixir
         - nodejs
-    - name: Install Linux support packages
-      apt:
-        name: 
-          - build-essential 
-          - libssl-dev 
-          - make 
-          - automake 
-          - autoconf 
-          - libncurses5-dev 
-          - gcc 
-          - g++ 
-          - openjdk-11-jdk
-    - name: Install Project packages
-      ansible.builtin.command: "asdf install"
-      args:
-        chdir: /var/www
+    # - name: Install Linux support packages
+    #   apt:
+    #     name: 
+    #       - build-essential 
+    #       - libssl-dev 
+    #       - make 
+    #       - automake 
+    #       - autoconf 
+    #       - libncurses5-dev 
+    #       - gcc 
+    #       - g++ 
+    #       - openjdk-11-jdk
+    # - name: Install Project packages
+    #   ansible.builtin.command: "asdf install"
+    #   args:
+    #     chdir: /var/www
     - name: Install Project Deps
       ansible.builtin.command: "mix deps.get && mix compile"
       args:
