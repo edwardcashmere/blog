@@ -14,7 +14,7 @@
     - name: pull down branch from main using git
       git:
         repo: https://github.com/edwardcashmere/blog
-        dest: /var/www
+        dest: /var/www/blog
         version: main
 
     - name: Install asdf
@@ -42,22 +42,50 @@
     #       - gcc 
     #       - g++ 
     #       - openjdk-11-jdk
-    # - name: Install Project packages
-    #   ansible.builtin.command: "asdf install"
-    #   args:
-    #     chdir: /var/www
+    - name: Install Project packages
+      ansible.builtin.command: "asdf install"
+      args:
+        chdir: /var/www/blog
     - name: Install Hex
       ansible.builtin.command: "mix local.hex --force"
       args:
-        chdir: /var/www/
+        chdir: /var/www/blog
     - name: Install Rebar
       ansible.builtin.command: "mix local.rebar --force"
       args:
-        chdir: /var/www/
+        chdir: /var/www/blog
     - name: Install Project Deps
       ansible.builtin.command: "mix deps.get && mix compile"
       args:
-        chdir: /var/www/
+        chdir: /var/www/blog
+    - name: Install Assessts deps
+      ansible.builtin.shell: npm install --prefix assets
+      args:
+        chdir: /var/www/blog
+    - name: Generate Secret
+      ansible.builtin.command: mix phx.gen.secret
+      args:
+        chdir: /var/www/blog
+      register: secret
+    - name: export secret key base
+      ansible.builtin.command: export SECRET_KEY_BASE=secret.stdout
+    - name: compile production code
+      ansible.builtin.command: "MIX_ENV=prod mix compile"
+      args:
+        chdir: /var/www/blog
+    - name: Deploy assets
+      ansible.builtin.shell: MIX_ENV=prod assets.deploy
+      args:
+        chdir: /var/www/blog
+    - name: Create release
+      ansible.builtin.shell: MIX_ENV=prod mix release
+      args:
+        chdir: /var/www/blog
+    - name: start app
+      ansible.builtin.shell: _build/prod/rel/my_app/bin/omondo_blog start
+      args:
+        chdir: /var/www/blog
+    
 
 
 
