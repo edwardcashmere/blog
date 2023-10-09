@@ -46,8 +46,8 @@
     #   ansible.builtin.command: "asdf install"
     #   args:
     #     chdir: /var/www
-    - name: Install Phoenix
-      ansible.builtin.command: "mix archive.install hex"
+    - name: Install Hex
+      ansible.builtin.command: "mix local.hex"
       args:
         chdir: /var/www
     - name: Install Project Deps
