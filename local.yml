@@ -47,13 +47,17 @@
     #   args:
     #     chdir: /var/www
     - name: Install Hex
-      ansible.builtin.command: "mix local.hex"
+      ansible.builtin.command: "mix local.hex --force"
       args:
-        chdir: /var/www
+        chdir: /var/www/
+    - name: Install Rebar
+      ansible.builtin.command: "mix local.rebar --force"
+      args:
+        chdir: /var/www/
     - name: Install Project Deps
       ansible.builtin.command: "mix deps.get && mix compile"
       args:
-        chdir: /var/www
+        chdir: /var/www/
 
 
 
