@@ -55,18 +55,18 @@
       args:
         chdir: /var/www/blog
     - name: Install Project Deps
-      ansible.builtin.command: "mix deps.get && mix compile"
+      ansible.builtin.shell: mix deps.get && mix compile
       args:
         chdir: /var/www/blog
     - name: Generate Secret
-      ansible.builtin.command: mix phx.gen.secret
+      ansible.builtin.shell: mix phx.gen.secret
       args:
         chdir: /var/www/blog
       register: secret_key
     - name: export secret key base
       ansible.builtin.shell: export SECRET_KEY_BASE=secret_key.stdout
     - name: compile production code
-      ansible.builtin.command: "MIX_ENV=prod mix compile"
+      ansible.builtin.shell: MIX_ENV=prod mix compile
       args:
         chdir: /var/www/blog
     - name: Deploy assets
