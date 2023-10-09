@@ -58,10 +58,6 @@
       ansible.builtin.command: "mix deps.get && mix compile"
       args:
         chdir: /var/www/blog
-    - name: Install Assessts deps
-      ansible.builtin.shell: npm install --prefix assets
-      args:
-        chdir: /var/www/blog
     - name: Generate Secret
       ansible.builtin.command: mix phx.gen.secret
       args:
