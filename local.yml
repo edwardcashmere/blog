@@ -10,7 +10,7 @@
         chdir: /var/www/blog
       register: secret_key
 
-    - name: Just task
+    - name: Export Secret
       ansible.builtin.shell: export=secret_key.stdout
       args:
         chdir: /var/www/blog
