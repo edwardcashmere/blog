@@ -3,85 +3,17 @@
   become: true
   remote_user: root
 
-  pre_tasks: 
-    - name: update repositories
-      apt:
-        update_cache: yes
-      changed_when: False
-
   tasks:
-    - include: infrastructure/install_cron_job.yml
-    - name: pull down branch from main using git
-      git:
-        repo: https://github.com/edwardcashmere/blog
-        dest: /var/www/blog
-        version: main
-
-    - name: Install asdf
-      ansible.builtin.git:
-        repo: https://github.com/asdf-vm/asdf.git
-        dest: "/Users/{{ lookup('env', 'USER') }}/.asdf"
-        version: v0.13.1
-    - name: Install plugins
-      ansible.builtin.shell: |
-        source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
-        asdf plugin-add {{ item }} || exit 0
-      with_items:
-        - erlang
-        - elixir
-        - nodejs
-    # - name: Install Linux support packages
-    #   apt:
-    #     name: 
-    #       - build-essential 
-    #       - libssl-dev 
-    #       - make 
-    #       - automake 
-    #       - autoconf 
-    #       - libncurses5-dev 
-    #       - gcc 
-    #       - g++ 
-    #       - openjdk-11-jdk
-    - name: Install Project packages
-      ansible.builtin.shell: asdf install
-      args:
-        chdir: /var/www/blog
-    - name: Install Hex
-      ansible.builtin.command: "mix local.hex --force"
-      args:
-        chdir: /var/www/blog
-    - name: Install Rebar
-      ansible.builtin.command: "mix local.rebar --force"
-      args:
-        chdir: /var/www/blog
-    - name: Install Project Deps
-      ansible.builtin.shell: mix deps.get && mix compile
-      args:
-        chdir: /var/www/blog
     - name: Generate Secret
       ansible.builtin.shell: mix phx.gen.secret
       args:
-        chdir: /var/www/blog
+        chdir: /Users/dev/personal/blog/omondo_blog
       register: secret_key
-    - name: export secret key base
-      ansible.builtin.shell: export SECRET_KEY_BASE=secret_key.stdout
-    - name: compile production code
-      ansible.builtin.shell: MIX_ENV=prod mix compile
-      args:
-        chdir: /var/www/blog
-    - name: Deploy assets
-      ansible.builtin.shell: MIX_ENV=prod assets.deploy
-      args:
-        chdir: /var/www/blog
-    - name: Create release
-      ansible.builtin.shell: MIX_ENV=prod mix release
-      args:
-        chdir: /var/www/blog
-    - name: start app
-      ansible.builtin.shell: _build/prod/rel/my_app/bin/omondo_blog start
-      args:
-        chdir: /var/www/blog
-    
+
+    - name: Second Task - Print the full output
+      ansible.builtin.debug:
+        var: secret_key
+
 
 
 
