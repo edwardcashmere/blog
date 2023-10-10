@@ -10,9 +10,13 @@
         chdir: /var/www/blog
       register: secret_key
 
+    - name: Just task
+      ansible.builtin.shell: export=secret_key.stdout
+      args:
+        chdir: /var/www/blog
     - name: Second Task - Print the full output
       ansible.builtin.debug:
-        var: secret_key
+        var: secret_key.stdout
 
 
 
