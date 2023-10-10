@@ -7,7 +7,7 @@
     - name: Generate Secret
       ansible.builtin.shell: mix phx.gen.secret
       args:
-        chdir: /Users/dev/personal/blog/omondo_blog
+        chdir: /var/www/blog
       register: secret_key
 
     - name: Second Task - Print the full output
