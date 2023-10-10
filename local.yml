@@ -15,8 +15,16 @@
       args:
         chdir: /var/www/blog
     - name: Second Task - Print the full output
+      ansible.builtin.shell: echo secret_key.stdout
+    - name:  3rd Task
+      ansible.builtin.shell: secret_key.stdout
+      register: output
+    - name:  4th Task
       ansible.builtin.debug:
-        var: secret_key.stdout
+        var: output
+
+
+
 
 
 
