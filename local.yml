@@ -65,7 +65,7 @@
       args:
         chdir: /var/www/blog
     - name: start app
-      ansible.builtin.shell: _build/prod/rel/my_app/bin/omondo_blog start
+      ansible.builtin.shell: _build/prod/rel/omondo_blog/bin/omondo_blog start
       args:
         chdir: /var/www/blog
     
