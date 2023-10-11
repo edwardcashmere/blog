@@ -10,6 +10,7 @@
         repo: https://github.com/edwardcashmere/blog
         dest: /var/www/blog
         version: main
+        force: yes
 
     - name: Install asdf
       ansible.builtin.git:
