@@ -61,6 +61,25 @@
       ansible.builtin.shell: MIX_ENV=prod mix assets.deploy
       args:
         chdir: /var/www/blog
+    - name: Check if port 4000 is listening
+      wait_for:
+        port: 4000
+        state: stopped
+      register: port_check
+      ignore_errors: yes
+    - name: Stop app
+      ansible.builtin.shell: _build/prod/rel/omondo_blog/bin/omondo_blog stop
+      args:
+        chdir: /var/www/blog
+      when: port_check.failed == true
+    - name: Delete Build/prod
+      ansible.builtin.shell: rm -rf _build/prod
+      args:
+        chdir: /var/www/blog
+    - name: Deploy assets
+      ansible.builtin.shell: MIX_ENV=prod mix assets.deploy
+      args:
+        chdir: /var/www/blog
     - name: Create release
       ansible.builtin.shell: MIX_ENV=prod mix release
       args:
