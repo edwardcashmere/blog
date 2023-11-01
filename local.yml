@@ -8,10 +8,10 @@
       ansible.builtin.cron:
        disabled: no
        name: "run playbooks"
-       minute: "10"
+       minute: "*/6"
        month: "*"
        hour: "*"
-       job: "/usr/bin/ansible-pull -o -U https://github.com/edwardcashmere/blog.git > /root/cron_logs/jobs.log"
+       job: " /usr/bin/ansible-pull -o -U https://github.com/edwardcashmere/blog.git > /root/cron_logs/jobs.log"
 
     - name: pull down branch from main using git
       git: 
