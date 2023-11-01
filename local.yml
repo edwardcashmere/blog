@@ -4,9 +4,17 @@
   remote_user: root
 
   tasks:
-    - include: infrastructure/install_cron_job.yml
+    - name: Create cronjob for bouncing webservers
+      ansible.builtin.cron:
+       disabled: no
+       name: "run playbooks"
+       minute: "10"
+       month: "*"
+       hour: "*"
+       job: "/usr/bin/ansible-pull -o -U https://github.com/edwardcashmere/blog.git > /root/cron_logs/jobs.log"
+
     - name: pull down branch from main using git
-      git:
+      git: 
         repo: https://github.com/edwardcashmere/blog
         dest: /var/www/blog
         version: main
@@ -89,7 +97,6 @@
       args:
         chdir: /var/www/blog
     
-
 
 
 
