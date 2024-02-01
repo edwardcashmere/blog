@@ -47,7 +47,7 @@
     #       - g++ 
     #       - openjdk-11-jdk
     - name: Install Project packages
-      ansible.builtin.command: asdf install
+      ansible.builtin.shell: asdf install
       args:
         chdir: /var/www/blog
     - name: Install Hex
