@@ -1,5 +1,5 @@
 ---
-- hosts: localhost
+- hosts: web
   become: true
   remote_user: root
 
@@ -33,6 +33,7 @@
         - erlang
         - elixir
         - nodejs
+        - ansible-base
     # - name: Install Linux support packages
     #   apt:
     #     name: 
@@ -46,7 +47,7 @@
     #       - g++ 
     #       - openjdk-11-jdk
     - name: Install Project packages
-      ansible.builtin.shell: asdf install
+      ansible.builtin.command: asdf install
       args:
         chdir: /var/www/blog
     - name: Install Hex
