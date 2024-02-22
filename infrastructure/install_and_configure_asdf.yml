@@ -1,0 +1,35 @@
+- name: Install asdf
+  ansible.builtin.git:
+    repo: 'https://github.com/asdf-vm/asdf.git'
+    dest: '{{ asdf_home }}'
+    version: v0.13.1
+    clone: yes
+    update: yes
+  become_user: "{{ asdf_user }}"
+
+- name: Add asdf to bashrc
+  lineinfile: 
+    path: '/home/{{ asdf_user }}/.bashrc'
+    line: 'source $HOME/.asdf/asdf.sh'
+    create: yes
+  become_user: '{{ asdf_user }}'
+  
+- name: Add asdf to bash_profile for login shell
+  lineinfile:
+    path: "/home/{{ asdf_user}}/.bash_profile"
+    line: 'source $HOME/.asdf/asdf.sh'
+    create: yes
+  become_user: "{{ asdf_user }}"
+
+- name: Ensure .asdfrc exists for user
+  copy:
+    dest: "/home/{{ asdf_user }}/.asdfrc"
+    content: |
+      legacy_version_file = yes
+    owner: "{{ asdf_user }}"
+    group: vader
+    mode: '0644'
+  become_user: '{{ asdf_user }}'
+
+
+    

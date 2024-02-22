@@ -1,0 +1,12 @@
+---
+create_user: edwardOfDawn
+copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
+sys_packages: ['curl', 'vim', 'git', 'ufw']
+asdf_user: edwardOfDawn
+asdf_home: "/home/{{ asdf_user }}/.asdf"
+asdf_plugins: 
+  - erlang
+  - elixir
+  - nodejs
+  - ansible-base
+

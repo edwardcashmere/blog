@@ -1,40 +1,42 @@
 ---
 - hosts: web
-  become: true
-  remote_user: root
+  vars_files:
+    - vars/default.yml
 
   tasks:
-    - name: Create cronjob for updating website if main changes
-      ansible.builtin.cron:
-       disabled: no
-       name: "run playbooks"
-       minute: "*/6"
-       month: "*"
-       hour: "*"
-       job: " /usr/bin/ansible-pull -o -U https://github.com/edwardcashmere/blog.git > /root/cron_logs/jobs.log"
+    # - name: Install prerequesites
+    #   become: true
+    #   apt: name=aptitude update_cache=yes state=latest force_apt_get=yes
 
-    - name: pull down branch from main using git
-      git: 
-        repo: https://github.com/edwardcashmere/blog
-        dest: /var/www/blog
-        version: main
-        force: yes
+    # - include: infrastructure/add_user_to_server.yml
+    # - include: infrastructure/install_and_configure_asdf.yml
 
-    - name: Install asdf
-      ansible.builtin.git:
-        repo: https://github.com/asdf-vm/asdf.git
-        dest: "/Users/{{ lookup('env', 'USER') }}/.asdf"
-        version: v0.13.1
-    - name: Install plugins
-      ansible.builtin.shell: |
-        source /Users/{{ lookup('env', 'USER') }}/.asdf/asdf.sh
-        asdf plugin-add {{ item }} || exit 0
-      with_items:
-        - erlang
-        - elixir
-        - nodejs
-        - ansible-base
+
+    # - name: Ensure correct ownership of repository
+    #   file:
+    #     path: "/var/www/blog"
+    #     owner: "{{ create_user }}"
+    #     group: vader
+    #     recurse: yes
+    #   become: yes
+
+    # - name: pull down branch from main using git
+    #   become: true
+    #   become_user: '{{ create_user }}'
+    #   git: 
+    #     repo: https://github.com/edwardcashmere/blog
+    #     dest: /var/www/blog
+    #     version: main
+    #     force: yes
+
+    - name: Install asdf plugins
+      ansible.builtin.command: '{{ asdf_home }}/bin/asdf plugin-add {{ item }}'
+      loop: '{{ asdf_plugins }}'
+      become_user: '{{ asdf_user }}'
+
+
     # - name: Install Linux support packages
+    #   become: true
     #   apt:
     #     name: 
     #       - build-essential 
@@ -46,55 +48,80 @@
     #       - gcc 
     #       - g++ 
     #       - openjdk-11-jdk
-    - name: Install Project packages
-      ansible.builtin.shell: asdf install
-      args:
-        chdir: /var/www/blog
-    - name: Install Hex
-      ansible.builtin.command: "mix local.hex --force"
-      args:
-        chdir: /var/www/blog
-    - name: Install Rebar
-      ansible.builtin.command: "mix local.rebar --force"
-      args:
-        chdir: /var/www/blog
-    - name: Install Project Deps
-      ansible.builtin.shell: mix deps.get && mix compile
-      args:
-        chdir: /var/www/blog
-    - name: compile production code
-      ansible.builtin.shell: MIX_ENV=prod mix compile
-      args:
-        chdir: /var/www/blog
-    - name: Deploy assets
-      ansible.builtin.shell: MIX_ENV=prod mix assets.deploy
-      args:
-        chdir: /var/www/blog
-    - name: Check if port 4000 is listening
-      ansible.builtin.shell: netstat -tunlp | grep ":4000 " | sed -e 's/.*\///'
-      register: port_check
 
-    - name: Stop app
-      ansible.builtin.shell: _build/prod/rel/omondo_blog/bin/omondo_blog stop
+    - name: sh env
+      ansible.builtin.shell:
       args:
-        chdir: /var/www/blog
-      when: port_check == beam.smp
-    - name: Delete Build/prod
-      ansible.builtin.shell: rm -rf _build/prod
+        cmd: "{{ shenv_cmd }}"
+        chdir: '{{ ansible_user_dir }}/'
+      register: shenv
+      vars:
+        - asdfsh: "{{ ansible_user_dir | quote }}/.asdf/asdf.sh"
+        - profile: "{{ ansible_user_dir }}/.profile"
+        - shprofile: "{{ ansible_user_dir }}/.{{ ansible_user_shell | basename | regex_replace('$', '_') | regex_replace('zsh_', 'z') }}profile"
+        - shrc: "{{ ansible_user_dir }}/.{{ ansible_user_shell | basename }}rc"
+        - shenv_cmd: "if [ -e {{ asdfsh }} ]; then echo '{{ asdfsh }}'; fi; if [ -e {{ shprofile }} ]; then echo '{{ shprofile }}'; fi; if [ -e {{ profile }} ]; then echo '{{ profile }}'; fi; if [ -e {{ shrc }} ]; then echo '{{ shrc }}'; fi"
+
+    - name: asdf install project packages
+      ansible.builtin.shell: |
+        {{ source }} 
+        asdf install
       args:
-        chdir: /var/www/blog
-    - name: Deploy assets
-      ansible.builtin.shell: MIX_ENV=prod mix assets.deploy
-      args:
-        chdir: /var/www/blog
-    - name: Create release
-      ansible.builtin.shell: MIX_ENV=prod mix release
-      args:
-        chdir: /var/www/blog
-    - name: start app
-      ansible.builtin.shell: _build/prod/rel/omondo_blog/bin/omondo_blog start
-      args:
-        chdir: /var/www/blog
+        executable: '{{ ansible_user_shell }}'
+      vars: 
+        source: "{{ shenv.stdout_lines | map('regex_replace', '(^)', '. ') | join('\n') }}"
+
+    # - name: Install Project Packages
+    #   become: true
+    #   become_user: '{{ create_user }}'
+    #   ansible.builtin.command: '{{ asdf_home }}/bin/asdf install'
+    #   args:
+    #     chdir: /var/www/blog
+    # - name: Install Hex
+    #   ansible.builtin.command: "mix local.hex --force"
+    #   args:
+    #     chdir: /var/www/blog
+    # - name: Install Rebar
+    #   ansible.builtin.command: "mix local.rebar --force"
+    #   args:
+    #     chdir: /var/www/blog
+    # - name: Install Project Deps
+    #   ansible.builtin.shell: mix deps.get && mix compile
+    #   args:
+    #     chdir: /var/www/blog
+    # - name: compile production code
+    #   ansible.builtin.shell: MIX_ENV=prod mix compile
+    #   args:
+    #     chdir: /var/www/blog
+    # - name: Deploy assets
+    #   ansible.builtin.shell: MIX_ENV=prod mix assets.deploy
+    #   args:
+    #     chdir: /var/www/blog
+    # - name: Check if port 4000 is listening
+    #   ansible.builtin.shell: netstat -tunlp | grep ":4000 " | sed -e 's/.*\///'
+    #   register: port_check
+
+    # - name: Stop app
+    #   ansible.builtin.shell: _build/prod/rel/omondo_blog/bin/omondo_blog stop
+    #   args:
+    #     chdir: /var/www/blog
+    #   when: port_check == beam.smp
+    # - name: Delete Build/prod
+    #   ansible.builtin.shell: rm -rf _build/prod
+    #   args:
+    #     chdir: /var/www/blog
+    # - name: Deploy assets
+    #   ansible.builtin.shell: MIX_ENV=prod mix assets.deploy
+    #   args:
+    #     chdir: /var/www/blog
+    # - name: Create release
+    #   ansible.builtin.shell: MIX_ENV=prod mix release
+    #   args:
+    #     chdir: /var/www/blog
+    # - name: start app
+    #   ansible.builtin.shell: _build/prod/rel/omondo_blog/bin/omondo_blog start
+    #   args:
+    #     chdir: /var/www/blog
     
 
 

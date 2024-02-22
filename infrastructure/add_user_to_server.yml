@@ -1,12 +1,49 @@
-- name: create ansible user
-  user:
-    name: 
-    system: yes
+- name: Setup deploy group
+  become: true
+  group:
+    name: vader
+    state: present
 
-- name: copy sudoers_ansible
-  copy: 
-    src: files/sudoers_ansible
-    dest: /etc/sudoers.d/ansible
-    owner: root
-    group: root
-    mode: 0440
+- name: Allow vader group to have passwordless sudo
+  become: true
+  lineinfile: 
+    path: /etc/sudoers
+    state: present
+    regexp: '^%vader'
+    line: '%vader ALL=(ALL) NOPASSWD: ALL'
+    validate: '/usr/sbin/visudo -cf %s'
+
+- name: Create a new regular user with sudo priviledges
+  become: true
+  user:
+    name: "{{ create_user }}"
+    state: present
+    groups: vader
+    append: true
+    create_home: true
+    shell: /bin/bash
+
+- name: Set authorized key for remote user
+  become: true
+  ansible.posix.authorized_key: 
+    user: '{{ create_user }}'
+    state: present
+    key: '{{ copy_local_key }}'
+
+- name: Disable password authentication for root
+  become: true
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    state: present
+    regexp: '^#?PermitRootLogin'
+    line: 'PermitRootLogin prohibit-password'
+
+- name: update apt
+  become: true
+  apt: update_cache=yes
+
+- name: Install required system packages
+  become_user: '{{ create_user }}'
+  apt:
+    name: '{{ sys_packages }}'
+    state: present

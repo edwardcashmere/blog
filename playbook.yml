@@ -1,0 +1,62 @@
+---
+- hosts: web
+  become: true
+  vars_files:
+    - vars/default.yml
+
+  tasks:
+    - name: Install prerequesites
+      apt: name=aptitude update_cache=yes state=latest force_apt_get=yes
+
+    - name: Setup Deploy group
+      group:
+        name: vader
+        state: present
+
+    - name: Allow Vader group to have passwordless sudo
+      lineinfile:
+        path: /etc/sudoers
+        state: present
+        regexp: '^%vader'
+        line: '%vader ALL=(ALL) NOPASSWD: ALL'
+        validate: '/usr/sbin/visudo -cf %s'
+
+    - name: Create new regular user with sudo priviledges
+      user: 
+        name: "{{ create_user }}"
+        state: present
+        groups: vader
+        append: true
+        create_home: true
+        shell: /bin/bash
+
+    - name: Set authorised key for remote user
+      ansible.posix.authorized_key: 
+        user: '{{ create_user }}'
+        state: present
+        key: '{{ copy_local_key }}'
+
+    - name: Disable password authentication for root
+      lineinfile:
+        path: /etc/ssh/sshd_config
+        state: present
+        regexp: '^#?PermitRootLogin'
+        line: 'PermitRootLogin prohibit-password'
+
+    - name: update apt
+      apt: update_cache=yes
+
+    - name: Install required system packages
+      apt: name={{ sys_packages }} state=latest
+
+    - name: UFW - Allow SSH connections
+      ufw:
+        rule: allow
+        name: OpenSSH
+
+    - name: UFW -- Deny all other incoming traffic by default
+      community.general.ufw:
+        state: enabled
+        policy: deny
+        direction: incoming
+
