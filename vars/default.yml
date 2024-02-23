@@ -1,7 +1,7 @@
 ---
 create_user: edwardOfDawn
 copy_local_key: "{{ lookup('file', lookup('env','HOME') + '/.ssh/id_rsa.pub') }}"
-sys_packages: ['curl', 'vim', 'git', 'ufw']
+sys_packages: ['curl', 'vim', 'git', 'ufw', 'unzip', 'python3', 'python3-pip']
 asdf_user: edwardOfDawn
 asdf_home: "/home/{{ asdf_user }}/.asdf"
 asdf_plugins: 
