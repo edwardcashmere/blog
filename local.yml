@@ -12,22 +12,22 @@
     # - include: infrastructure/install_and_configure_asdf.yml
 
 
-    # - name: Ensure correct ownership of repository
-    #   file:
-    #     path: "/var/www/blog"
-    #     owner: "{{ create_user }}"
-    #     group: vader
-    #     recurse: yes
-    #   become: yes
+    - name: Ensure correct ownership of repository
+      file:
+        path: "/var/www/blog"
+        owner: "{{ create_user }}"
+        group: vader
+        recurse: yes
+      become: yes
 
-    # - name: pull down branch from main using git
-    #   become: true
-    #   become_user: '{{ create_user }}'
-    #   git: 
-    #     repo: https://github.com/edwardcashmere/blog
-    #     dest: /var/www/blog
-    #     version: main
-    #     force: yes
+    - name: pull down branch from main using git
+      become: true
+      become_user: '{{ create_user }}'
+      git: 
+        repo: https://github.com/edwardcashmere/blog
+        dest: /var/www/blog
+        version: main
+        force: yes
 
     - name: Install asdf plugins
       ansible.builtin.command: '{{ asdf_home }}/bin/asdf plugin-add {{ item }}'
@@ -66,8 +66,10 @@
       ansible.builtin.shell: |
         {{ source }} 
         asdf install
+
       args:
         executable: '{{ ansible_user_shell }}'
+        chdir: /var/www/blog
       vars: 
         source: "{{ shenv.stdout_lines | map('regex_replace', '(^)', '. ') | join('\n') }}"
 
